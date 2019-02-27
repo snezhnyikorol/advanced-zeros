@@ -1,101 +1,40 @@
 module.exports = function getZerosCount(number, base) {
-  let count = 0;
-  let prime = [];
-  let numbers = new Array(257).fill(1);
-  function getPrimeDividers(value) {
-    let mul = [];
-    if (numbers[value]) {
-      mul.push({prime: value,val: 1});
-    } else {
-      let i = 0;
-      let val = 0;
-      do {
-        if (value % prime[i] == 0) {
-          val++;
-          value /= prime[i];
-        } else {
-          if (val != 0) {
-            mul.push({prime: prime[i],val: val});
-          }
-          i++;
-          val = 0;
-        }
-      } while (value != 1);
-      mul.push({prime: prime[i],val: val});
-    }
-    return mul;
+  function div(a, b) {
+    return (a - a % b) / b;
   }
-  function getPrimeDividerss(num) {
-    let mul = [];
-    if (numbers[num]) {
-      mul.push({prime: num,val: 1});
-    } else {
-      let i = 0;
-      let val = 0;
-      do {
-        if (num % mult[i].prime == 0) {
-          val++;
-          num /= mult[i].prime;
-        } else {
-          if (val != 0) {
-            mul.push({prime: mult[i].prime,val: val});
-          }
-          i++;
-          val = 0;
+  let muls = {};
+  function getMuls(n, muls) {
+    let p = 2;
+    let length = Math.sqrt(n);
+    while (p <= length) {
+      while(n % p == 0) {
+        n /= p;
+        length = Math.sqrt(n);
+        if (!muls.hasOwnProperty(p)) {
+          muls[p] = 0;
         }
-      } while (num >= 1 && i < mult.length);
-    }
-    return mul;
-  }
-  function mergeObj(obj1, obj2) {
-    let obj = obj1.slice();
-    for (let i = 0; i < obj.length; i++) {
-      for (let j= 0; j < obj2.length; j++) {
-        if (obj[i].prime == obj2[j].prime) {
-          obj[i].val += obj2[j].val; 
-        }
-      } 
-    }
-    return obj;
-  }
-  let p = 2;
-  do {
-    for (let i = 2; i * p < 257; i++) {
-      numbers[i * p] = 0;
-    }
-    do {
+        muls[p]++;
+      }
       p++;
-    } while (numbers[p] == 0 && p < 257);
-  } while (p < 257);
-  for (let i = 2; i < 257; i++) {
-    if (numbers[i]) {
-      prime.push(i);
-    } 
-  }
-  let mult = getPrimeDividers(base);
-  let mul2 = [];
-  for (let i = 0; i < mult.length; i++) {
-    mul2[i] = Object.assign({}, mult[i]);
-  }
-  for (let i = 0; i < mul2.length; i++) {
-    mul2[i].val = 0;
-  }
-  for (let i = 2; i <= number; i++) {
-    mul2 = mergeObj(mul2, getPrimeDividerss(i));
-  }
-  let min = Number.MAX_VALUE;
-  let key;
-  for (let i = 0; i < mul2.length; i++) {
-    if (mul2[i].val < min) {
-      min = mul2[i].val;
-      key = mul2[i].prime;
+    }
+    if (n != 1) {
+      if (!muls.hasOwnProperty(n)) {
+        muls[n] = 0;
+      }
+      muls[n]++;
     }
   }
-  for (let i = 0; i < mult.length; i++) {
-    if (mult[i].prime == key) {
-      count = (min - min % mult[i].val) / mult[i].val;
+  getMuls(base, muls);
+  let res = Number.MAX_SAFE_INTEGER;
+  for (const key in muls) {
+    let p_res = 0;
+    let mul = key;
+    while (div(number, mul)) {
+      p_res += div(number, mul);
+      mul *= key;
     }
+    p_res = div(p_res, muls[key]);
+    res = Math.min(p_res, res);
   }
-
-  return count;
+  return res;
 }
