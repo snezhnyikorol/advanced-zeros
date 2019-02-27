@@ -1,4 +1,4 @@
-module.exports = function getZerosCount(number, base) {
+function getZerosCount(number, base) {
   let count = 0;
   let prime = [];
   let numbers = new Array(257).fill(1);
@@ -6,6 +6,7 @@ module.exports = function getZerosCount(number, base) {
     let mul = [];
     if (numbers[value]) {
       mul.push({prime: value,val: 1});
+      // mul[value, val];
     } else {
       let i = 0;
       let val = 0;
@@ -16,12 +17,14 @@ module.exports = function getZerosCount(number, base) {
         } else {
           if (val != 0) {
             mul.push({prime: prime[i],val: val});
+            // mul[prime[i]] = val;
           }
           i++;
           val = 0;
         }
       } while (value != 1);
       mul.push({prime: prime[i],val: val});
+      // mul[prime[i]] = val;
     }
     return mul;
   }
@@ -29,6 +32,7 @@ module.exports = function getZerosCount(number, base) {
     let mul = [];
     if (numbers[num]) {
       mul.push({prime: num,val: 1});
+      // mul[value, val];
     } else {
       let i = 0;
       let val = 0;
@@ -39,11 +43,14 @@ module.exports = function getZerosCount(number, base) {
         } else {
           if (val != 0) {
             mul.push({prime: mult[i].prime,val: val});
+            // mul[prime[i]] = val;
           }
           i++;
           val = 0;
         }
       } while (num >= 1 && i < mult.length);
+      // mul.push({prime: mult[i - 1].prime,val: val});
+      // mul[prime[i]] = val;
     }
     return mul;
   }
@@ -99,3 +106,5 @@ module.exports = function getZerosCount(number, base) {
 
   return count;
 }
+
+console.log(getZerosCount(82557730, 84)); 
